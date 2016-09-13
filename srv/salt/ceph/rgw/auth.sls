@@ -6,7 +6,7 @@
 {% set rgw_name = salt['pillar.get']('rgw_service_name', 'rgw')  %}
 keyring {{ rgw_node }}:
   file.managed:
-    - name: /var/lib/ceph/rgw/ceph-rgw.{{ grains['host'] }}/ceph.keyring
+    - name: /var/lib/ceph/rgw/ceph-rgw.{{ pillar['short_id'] }}/ceph.keyring
     - source:
       - salt://ceph/rgw/files/keyring.j2
     - template: jinja

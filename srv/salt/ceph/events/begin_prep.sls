@@ -1,5 +1,5 @@
 
-salt/ceph/stage/prep/{{ grains['host'] }}/begin:
+salt/ceph/stage/prep/{{ grains['id'] }}/begin:
   event.send:
     - data:
         status: "prep stage begins"
@@ -11,5 +11,5 @@ sleep:
   cmd.run:
     - name: "sleep 3"
     - require:
-      - event: salt/ceph/stage/prep/{{ grains['host'] }}/begin
+      - event: salt/ceph/stage/prep/{{ grains['id'] }}/begin
 

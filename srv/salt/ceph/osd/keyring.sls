@@ -4,8 +4,8 @@
     - source:
       - salt://ceph/osd/files/keyring.j2
     - template: jinja
-    - user: root
-    - group: root
+    - user: salt
+    - group: salt
     - mode: 600
     - makedirs: True
     - fire_event: True

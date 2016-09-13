@@ -1,5 +1,5 @@
 
-/var/lib/ceph/mds/ceph-mds.{{ grains['host'] }}/ceph.keyring:
+/var/lib/ceph/mds/ceph-mds.{{ pillar['short_id'] }}/ceph.keyring:
   file.managed:
     - source:
       - salt://ceph/mds/files/keyring.j2
@@ -9,7 +9,7 @@
     - mode: 600
     - makedirs: True
     - context:
-      mds: {{ grains['host'] }}
+      mds: {{ pillar['short_id'] }}
     - fire_event: True
 
 

@@ -499,6 +499,49 @@ class Validate(object):
         if not 'time_server' in self.errors:
             self.passed['time_server'] = "valid"
 
+    def short_id(self):
+        """
+        Verify that short_id is unique for each minion
+        """
+        ids = {}
+        for node in self.data.keys():
+            if ('short_id' in self.data[node]):
+                if node in self.data[node]['short_id']:
+                    ids[self.data[node]['short_id']].append(node)
+                else:
+                    ids[self.data[node]['short_id']] = [ node ] 
+            else:
+                msg = "/srv/pillar/ceph/cluster/{}.sls is missing 'short_id'".format(node)
+                if 'short_id' in self.errors:
+                    self.errors['short_id'].append(msg)
+                else:
+                    self.errors['short_id'] = [ msg ]
+
+        for short_id in ids.keys():
+            if len(ids[short_id]) > 1:
+                msg = "Duplicate short id on {}".format(ids[short_id])
+                if 'short_id' in self.errors:
+                    self.errors['short_id'].append(msg)
+                else:
+                    self.errors['short_id'] = [ msg ]
+
+        if not 'short_id' in self.errors:
+            self.passed['short_id'] = "valid"
+
+    def fqdn(self):
+        """
+        Verify that fqdn matches minion id
+        """
+        for node in self.grains.keys():
+            if self.grains[node]['fqdn'] != node:
+                msg = "fqdn {} does not match minion id {}".format(self.grains[node]['fqdn'], node)
+                if 'fqdn' in self.errors:
+                    self.errors['fqdn'].append(msg)
+                else:
+                    self.errors['fqdn'] = [ msg ]
+        if not 'fqdn' in self.errors:
+            self.passed['fqdn'] = "valid"
+
     def report(self):
         """
         """
@@ -568,6 +611,8 @@ def pillar(name = None, **kwargs):
     v.osd_creation()
     v.pool_creation()
     v.time_server()
+    v.short_id()
+    v.fqdn()
     v.report()
 
     if v.errors:

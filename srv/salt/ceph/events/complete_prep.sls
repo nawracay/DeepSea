@@ -1,6 +1,6 @@
 
 
-salt/ceph/stage/prep/{{ grains['host'] }}/complete:
+salt/ceph/stage/prep/{{ grains['id'] }}/complete:
   event.send:
     - data:
         status: "prep stage complete"

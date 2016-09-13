@@ -1,5 +1,4 @@
 {% set cluster = salt['pillar.get']('cluster') %}
-{% set mon_id = grains['host'] %}
 {% set fsid = salt['pillar.get']('fsid') %}
 {% set mon_secret = salt['pillar.get']('keyring:mon') %}
 
@@ -44,8 +43,8 @@ create_mon_dirs:
 # We don't support None authentication yet, creates file guards that we don't execute this
 create_mon_fs:
   cmd.run:
-    - name: ceph-mon --mkfs -i {{ mon_id }} --cluster {{ cluster }} --setuser ceph --setgroup ceph --fsid  {{ fsid }} --keyring /var/lib/ceph/tmp/keyring.mon
-    - creates: /var/lib/ceph/mon/{{ cluster }}-{{ mon_id }}/keyring
+    - name: ceph-mon --mkfs -i {{ pillar['short_id'] }} --cluster {{ cluster }} --setuser ceph --setgroup ceph --fsid  {{ fsid }} --keyring /var/lib/ceph/tmp/keyring.mon
+    - creates: /var/lib/ceph/mon/{{ cluster }}-{{ pillar['short_id'] }}/keyring
     - require:
         - file: /var/lib/ceph/tmp/keyring.mon
 
@@ -58,13 +57,13 @@ create_mon_fs:
 # TODO: we can put this check in a nice exec. module
 start-mon:
   cmd.run:
-    - name: "systemctl start ceph-mon@{{ grains['host'] }}"
+    - name: "systemctl start ceph-mon@{{ pillar['short_id'] }}"
     - require:
         - cmd: create_mon_fs
 
 enable-mon:
   cmd.run:
-    - name: "systemctl enable ceph-mon@{{ grains['host'] }}"
+    - name: "systemctl enable ceph-mon@{{ pillar['short_id'] }}"
     - require:
         - cmd: create_mon_fs
 

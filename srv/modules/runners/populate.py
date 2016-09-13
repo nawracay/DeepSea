@@ -693,6 +693,7 @@ class CephCluster(object):
                 filename = "{}/{}.sls".format(cluster_dir, minion)
                 contents = {}
                 contents['cluster'] = cluster
+                contents['short_id'] = minion.split('.')[0]
 
                 self.writer.write(filename, contents)
 
